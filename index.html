@@ -1,0 +1,1911 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+>
+
+<title>Сыни және аналитикалық ойлау</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --primary: #2563eb;
+  --primary-dark: #1e40af;
+  --secondary: #0ea5e9;
+
+  --background: #f3f6fb;
+  --card: #ffffff;
+  --text: #1f2937;
+  --muted: #667085;
+  --border: #d9e0eb;
+
+  --correct: #15803d;
+  --correct-background: #dcfce7;
+
+  --wrong: #b91c1c;
+  --wrong-background: #fee2e2;
+
+  --formula-background: #eff6ff;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Arial,
+    sans-serif;
+  background: var(--background);
+  color: var(--text);
+  line-height: 1.55;
+}
+
+header {
+  padding: 34px 16px 58px;
+  background:
+    linear-gradient(
+      135deg,
+      #1d4ed8,
+      #0284c7
+    );
+  color: white;
+  text-align: center;
+}
+
+header h1 {
+  margin: 0 0 10px;
+  font-size: 35px;
+  line-height: 1.2;
+}
+
+header p {
+  margin: 0;
+  font-size: 17px;
+  opacity: 0.95;
+}
+
+.container {
+  width: min(
+    960px,
+    calc(100% - 24px)
+  );
+  margin: -32px auto 55px;
+}
+
+.section-navigation {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 16px;
+  margin-bottom: 18px;
+  background: white;
+  border-radius: 17px;
+  box-shadow:
+    0 5px 20px
+    rgba(31, 41, 55, 0.09);
+}
+
+.section-button {
+  border: 2px solid #d8dfeb;
+  border-radius: 13px;
+  padding: 16px 12px;
+  background: #f8fafc;
+  color: #344054;
+  font-size: 17px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.section-button:hover {
+  border-color: var(--primary);
+}
+
+.section-button.active {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: white;
+}
+
+.test-section {
+  display: none;
+}
+
+.test-section.active {
+  display: block;
+}
+
+.section-header {
+  padding: 21px;
+  margin-bottom: 15px;
+  background: white;
+  border-radius: 16px;
+  box-shadow:
+    0 4px 18px
+    rgba(31, 41, 55, 0.07);
+}
+
+.section-header h2 {
+  margin: 0 0 7px;
+  color: var(--primary);
+  font-size: 27px;
+}
+
+.section-header p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.section-information {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 13px;
+}
+
+.information-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 11px;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: var(--primary-dark);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.progress-card {
+  padding: 16px 18px;
+  margin-bottom: 15px;
+  background: white;
+  border-radius: 15px;
+  box-shadow:
+    0 4px 18px
+    rgba(31, 41, 55, 0.07);
+}
+
+.progress-information {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 9px;
+  color: var(--muted);
+}
+
+.progress-information strong {
+  color: var(--primary);
+}
+
+.progress-line {
+  width: 100%;
+  height: 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e4e9f2;
+}
+
+.progress-line span {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--primary);
+  transition: width 0.25s;
+}
+
+.question {
+  padding: 21px;
+  margin-bottom: 15px;
+  background: var(--card);
+  border: 1px solid #e1e7f0;
+  border-radius: 16px;
+  box-shadow:
+    0 4px 17px
+    rgba(31, 41, 55, 0.06);
+}
+
+.question-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 38px;
+  height: 35px;
+  margin-bottom: 12px;
+  padding: 0 11px;
+  border-radius: 10px;
+  background: #dbeafe;
+  color: var(--primary-dark);
+  font-weight: 900;
+}
+
+.question-title {
+  margin: 0 0 16px;
+  font-size: 18px;
+  line-height: 1.55;
+}
+
+.task-text {
+  margin: 12px 0 17px;
+  padding: 15px;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+
+.math-box {
+  margin: 12px 0 17px;
+  padding: 15px;
+  overflow-x: auto;
+  border-radius: 12px;
+  background: var(--formula-background);
+  text-align: center;
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+  font-size: 23px;
+}
+
+.table-wrapper {
+  width: 100%;
+  margin: 13px 0 18px;
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  min-width: 590px;
+  border-collapse: collapse;
+  background: white;
+}
+
+.data-table th,
+.data-table td {
+  padding: 11px;
+  border: 1px solid #475467;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.data-table th {
+  background: #eff6ff;
+  color: #1e3a8a;
+  font-weight: 900;
+}
+
+.comparison-table td {
+  width: 50%;
+  text-align: left;
+  vertical-align: top;
+  line-height: 1.55;
+}
+
+.question-image {
+  display: block;
+  width: 100%;
+  max-width: 650px;
+  max-height: 450px;
+  object-fit: contain;
+  margin: 13px auto 18px;
+  padding: 8px;
+  border: 1px solid #e4e7ec;
+  border-radius: 12px;
+  background: white;
+}
+
+.options {
+  display: grid;
+  gap: 9px;
+}
+
+.option {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 13px;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  background: white;
+  cursor: pointer;
+  transition: 0.18s;
+}
+
+.option:hover {
+  border-color: #93b4f5;
+  background: #fafcff;
+}
+
+.option input {
+  flex: 0 0 auto;
+  margin-top: 4px;
+  transform: scale(1.15);
+  accent-color: var(--primary);
+}
+
+.option-letter {
+  flex: 0 0 25px;
+  color: #475467;
+  font-weight: 900;
+}
+
+.option.correct {
+  border-color: #22c55e;
+  background: var(--correct-background);
+  color: #166534;
+}
+
+.option.wrong {
+  border-color: #ef4444;
+  background: var(--wrong-background);
+  color: #991b1b;
+}
+
+.explanation {
+  display: none;
+  margin-top: 17px;
+  padding-top: 16px;
+  border-top: 1px solid #e4e7ec;
+}
+
+.question.checked .explanation {
+  display: block;
+}
+
+.correct-answer {
+  padding: 12px 14px;
+  border-radius: 11px;
+  background: var(--correct-background);
+  color: #166534;
+  font-weight: 800;
+}
+
+.explanation-title {
+  margin: 14px 0 7px;
+  color: var(--primary-dark);
+  font-size: 17px;
+  font-weight: 900;
+}
+
+.explanation-text {
+  margin: 0;
+  padding: 13px 14px;
+  border-radius: 11px;
+  background: #f8fafc;
+}
+
+.solution-steps {
+  margin: 0;
+  padding: 13px 14px 13px 37px;
+  border-radius: 11px;
+  background: #f8fafc;
+}
+
+.solution-steps li {
+  margin: 7px 0;
+}
+
+.formula {
+  margin: 10px 0;
+  padding: 12px;
+  overflow-x: auto;
+  border-radius: 10px;
+  background: var(--formula-background);
+  text-align: center;
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+  font-size: 21px;
+  font-weight: 700;
+}
+
+.conclusion {
+  margin-top: 11px;
+  padding: 12px 14px;
+  border-left: 5px solid var(--primary);
+  border-radius: 8px;
+  background: #eff6ff;
+  font-weight: 750;
+}
+
+.result-card {
+  display: none;
+  padding: 24px;
+  margin: 18px 0;
+  border-radius: 16px;
+  background: white;
+  text-align: center;
+  box-shadow:
+    0 4px 18px
+    rgba(31, 41, 55, 0.08);
+}
+
+.result-card.show {
+  display: block;
+}
+
+.result-card h3 {
+  margin: 0 0 8px;
+  color: var(--primary);
+}
+
+.score {
+  margin: 5px 0;
+  color: var(--primary);
+  font-size: 39px;
+  font-weight: 900;
+}
+
+.actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 20;
+  display: flex;
+  gap: 10px;
+  padding: 13px 0 17px;
+  background:
+    rgba(243, 246, 251, 0.95);
+  backdrop-filter: blur(9px);
+}
+
+.actions button {
+  border: none;
+  border-radius: 12px;
+  padding: 15px 17px;
+  font-size: 16px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.show-result-button {
+  flex: 1;
+  background: var(--primary);
+  color: white;
+}
+
+.reset-button {
+  background: #e5e7eb;
+  color: #1f2937;
+}
+
+.total-result {
+  display: none;
+  margin-top: 25px;
+  padding: 25px;
+  border-radius: 17px;
+  background:
+    linear-gradient(
+      135deg,
+      #1d4ed8,
+      #0284c7
+    );
+  color: white;
+  text-align: center;
+}
+
+.total-result.show {
+  display: block;
+}
+
+.total-result h2 {
+  margin: 0 0 10px;
+}
+
+.total-score {
+  font-size: 43px;
+  font-weight: 900;
+}
+
+@media (max-width: 650px) {
+  header h1 {
+    font-size: 28px;
+  }
+
+  .section-navigation {
+    grid-template-columns: 1fr;
+  }
+
+  .question {
+    padding: 17px 15px;
+  }
+
+  .question-title {
+    font-size: 17px;
+  }
+
+  .actions {
+    flex-direction: column-reverse;
+  }
+
+  .data-table {
+    min-width: 540px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>
+    Сыни және аналитикалық ойлау
+  </h1>
+
+  <p>
+    Оқу дайындығын анықтайтын пробный тест
+  </p>
+</header>
+
+<main class="container">
+
+  <nav class="section-navigation">
+
+    <button
+      type="button"
+      id="criticalTab"
+      class="section-button active"
+      onclick="openSection('critical')"
+    >
+      Сыни ойлау
+    </button>
+
+    <button
+      type="button"
+      id="analyticalTab"
+      class="section-button"
+      onclick="openSection('analytical')"
+    >
+      Аналитикалық ойлау
+    </button>
+
+  </nav>
+
+  <section
+    id="criticalSection"
+    class="test-section active"
+  >
+
+    <div class="section-header">
+      <h2>Сыни ойлау</h2>
+
+      <p>
+        15 сұрақ. Әр сұрақта бір дұрыс жауап бар.
+        Нәтижеден кейін толық шешімі көрсетіледі.
+      </p>
+
+      <div class="section-information">
+        <span class="information-badge">
+          15 сұрақ
+        </span>
+
+        <span class="information-badge">
+          Ең жоғары балл: 15
+        </span>
+      </div>
+    </div>
+
+    <div class="progress-card">
+
+      <div class="progress-information">
+        <span>Жауап беру барысы</span>
+
+        <strong id="criticalProgressText">
+          0 / 15
+        </strong>
+      </div>
+
+      <div class="progress-line">
+        <span id="criticalProgressBar"></span>
+      </div>
+
+    </div>
+
+    <div
+      id="criticalResult"
+      class="result-card"
+    >
+      <h3>Сыни ойлау нәтижесі</h3>
+
+      <div
+        id="criticalScore"
+        class="score"
+      >
+        0 / 15
+      </div>
+    </div>
+
+    <div id="criticalQuiz"></div>
+
+    <div class="actions">
+
+      <button
+        type="button"
+        class="reset-button"
+        onclick="resetCriticalTest()"
+      >
+        Қайта бастау
+      </button>
+
+      <button
+        type="button"
+        class="show-result-button"
+        onclick="showCriticalResults()"
+      >
+        Нәтижені көрсету
+      </button>
+
+    </div>
+
+  </section>
+
+  <section
+    id="analyticalSection"
+    class="test-section"
+  >
+
+    <div class="section-header">
+      <h2>Аналитикалық ойлау</h2>
+
+      <p>
+        15 сұрақ. Әр сұрақта бір дұрыс жауап бар.
+        Нәтижеден кейін толық түсіндірмесі көрсетіледі.
+      </p>
+
+      <div class="section-information">
+        <span class="information-badge">
+          15 сұрақ
+        </span>
+
+        <span class="information-badge">
+          Ең жоғары балл: 15
+        </span>
+      </div>
+    </div>
+
+    <div class="progress-card">
+
+      <div class="progress-information">
+        <span>Жауап беру барысы</span>
+
+        <strong id="analyticalProgressText">
+          0 / 15
+        </strong>
+      </div>
+
+      <div class="progress-line">
+        <span id="analyticalProgressBar"></span>
+      </div>
+
+    </div>
+
+    <div
+      id="analyticalResult"
+      class="result-card"
+    >
+      <h3>Аналитикалық ойлау нәтижесі</h3>
+
+      <div
+        id="analyticalScore"
+        class="score"
+      >
+        0 / 15
+      </div>
+    </div>
+
+    <div id="analyticalQuiz"></div>
+
+    <div class="actions">
+
+      <button
+        type="button"
+        class="reset-button"
+        onclick="resetAnalyticalTest()"
+      >
+        Қайта бастау
+      </button>
+
+      <button
+        type="button"
+        class="show-result-button"
+        onclick="showAnalyticalResults()"
+      >
+        Нәтижені көрсету
+      </button>
+
+    </div>
+
+  </section>
+
+  <section
+    id="totalResult"
+    class="total-result"
+  >
+    <h2>Жалпы нәтиже</h2>
+
+    <div
+      id="totalScore"
+      class="total-score"
+    >
+      0 / 30
+    </div>
+  </section>
+
+<script>
+const letters = [
+  "A",
+  "B",
+  "C",
+  "D",
+  "E"
+];
+
+const criticalQuestions = [
+
+  {
+    number: 1,
+
+    question:
+      "А және B шамаларын салыстырыңыз",
+
+    visual: `
+      <div class="task-text">
+        ПЦР-тест алған 44 әйелде папилломавирустық
+        инфекцияның (human papillomavirus, HPV)
+        әртүрлі типтері табылды.
+      </div>
+
+      <div class="table-wrapper">
+        <table class="data-table comparison-table">
+          <thead>
+            <tr>
+              <th>A шамасы</th>
+              <th>B шамасы</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>
+                HPV 18, 33, 45, 52, 58 типтері
+                әйелдердің 54,5%-ында табылды.
+                Оның 17%-ы HPV 18 типі.
+                HPV 18 типі қанша әйелде табылды?
+              </td>
+
+              <td>
+                HPV 31, 35, 39, 59 типтері
+                әйелдердің 45,5%-ында табылды.
+                Оның 20%-ы HPV 35 типі.
+                HPV 35 типі қанша әйелде табылды?
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    `,
+
+    options: [
+      "B шамасы артық",
+      "Шамалар тең",
+      "Берілген ақпарат бойынша шамаларды салыстыру мүмкін емес",
+      "A шамасы артық"
+    ],
+
+    correct: 1,
+
+    explanation:
+      "Әр шамада алдымен тиісті HPV топтары анықталған әйелдер санын, содан кейін сол топ ішіндегі нақты HPV типінің үлесін есептейміз.",
+
+    steps: [
+      "A шамасы: 44 · 54,5% = 23,98, яғни шамамен 24 әйел.",
+      "HPV 18 анықталғандар: 24 · 17% = 4,08, яғни шамамен 4 әйел.",
+      "B шамасы: 44 · 45,5% = 20,02, яғни шамамен 20 әйел.",
+      "HPV 35 анықталғандар: 20 · 20% = 4 әйел.",
+      "Екі шаманың да мәні шамамен 4-ке тең."
+    ],
+
+    formula:
+      "A ≈ 44 · 0,545 · 0,17 ≈ 4; B ≈ 44 · 0,455 · 0,20 ≈ 4",
+
+    conclusion:
+      "Дұрыс жауап: B) Шамалар тең."
+  },
+
+  {
+    number: 2,
+
+    question:
+      "A, B және C шамаларын салыстырыңыз",
+
+    visual: `
+      <div class="math-box">
+        A = 6,2 · 2,1<br>
+        B = 4,1 · 1,2<br>
+        C = 2,22 · 7,1
+      </div>
+    `,
+
+    options: [
+      "B > A > C",
+      "B < A < C",
+      "A < B < C",
+      "C < A < B",
+      "C < B < A"
+    ],
+
+    correct: 1,
+
+    explanation:
+      "Үш шаманы салыстыру үшін олардың әрқайсысының сандық мәнін есептейміз.",
+
+    steps: [
+      "A = 6,2 · 2,1 = 13,02.",
+      "B = 4,1 · 1,2 = 4,92.",
+      "C = 2,22 · 7,1 = 15,762.",
+      "Сандардың өсу реті: 4,92 < 13,02 < 15,762.",
+      "Демек, B < A < C."
+    ],
+
+    formula:
+      "B = 4,92 < A = 13,02 < C = 15,762",
+
+    conclusion:
+      "Дұрыс жауап: B) B < A < C."
+  },
+
+  {
+    number: 3,
+
+    question:
+      "A және B шамаларын салыстырыңыз",
+
+    visual: `
+      <div class="table-wrapper">
+        <table class="data-table comparison-table">
+          <thead>
+            <tr>
+              <th>A шамасы</th>
+              <th>B шамасы</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>
+                Сандардың көбейтіндісі қандай
+                цифрмен аяқталады?
+                <div class="math-box">
+                  3⁴ · 7² · 9³
+                </div>
+              </td>
+
+              <td>
+                Теңдеудің оң түбірі:
+                <div class="math-box">
+                  (x − 5)² = 100
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    `,
+
+    options: [
+      "A шамасы артық",
+      "Шамалар тең",
+      "B шамасы артық",
+      "Берілген ақпарат бойынша шамаларды салыстыру мүмкін емес"
+    ],
+
+    correct: 2,
+
+    explanation:
+      "A шамасы көбейтіндінің соңғы цифрын, ал B шамасы теңдеудің оң түбірін білдіреді.",
+
+    steps: [
+      "3⁴ санының соңғы цифры — 1.",
+      "7² санының соңғы цифры — 9.",
+      "9³ санының соңғы цифры — 9.",
+      "Көбейтіндінің соңғы цифры: 1 · 9 · 9 = 81, соңғы цифры — 1.",
+      "Сондықтан A = 1.",
+      "(x − 5)² = 100 теңдеуінен x − 5 = ±10.",
+      "Түбірлері: x = 15 және x = −5.",
+      "Оң түбірі B = 15.",
+      "15 > 1 болғандықтан, B шамасы артық."
+    ],
+
+    formula:
+      "A = 1; B = 15 ⇒ B > A",
+
+    conclusion:
+      "Дұрыс жауап: C) B шамасы артық."
+  },
+
+  {
+    number: 4,
+
+    question:
+      "Егер a = 0,5 болса, келесі теңсіздіктердің қайсысы дұрыс?",
+
+    visual: "",
+
+    options: [
+      "a < a³ < a²",
+      "a³ < a² < a",
+      "a < a² < a³",
+      "a² < a < a³",
+      "a² < a³ < a"
+    ],
+
+    correct: 1,
+
+    explanation:
+      "0 мен 1 аралығындағы оң санның дәрежесі артқан сайын оның мәні кішірейеді.",
+
+    steps: [
+      "a = 0,5.",
+      "a² = 0,5² = 0,25.",
+      "a³ = 0,5³ = 0,125.",
+      "Мәндерді салыстырамыз: 0,125 < 0,25 < 0,5.",
+      "Демек, a³ < a² < a."
+    ],
+
+    formula:
+      "0,125 < 0,25 < 0,5 ⇒ a³ < a² < a",
+
+    conclusion:
+      "Дұрыс жауап: B) a³ < a² < a."
+  },
+
+  {
+    number: 5,
+
+    question:
+      "Берілген шеңбердің периметрін табыңыз",
+
+    visual: `
+      <svg
+        class="question-image"
+        viewBox="0 0 620 410"
+        role="img"
+        aria-label="Радиусы 5 сантиметр болатын шеңбер"
+      >
+        <rect
+          x="0"
+          y="0"
+          width="620"
+          height="410"
+          fill="#ffffff"
+        />
+
+        <circle
+          cx="295"
+          cy="205"
+          r="155"
+          fill="none"
+          stroke="#38bdf8"
+          stroke-width="4"
+        />
+
+        <circle
+          cx="295"
+          cy="205"
+          r="5"
+          fill="#111827"
+        />
+
+        <line
+          x1="295"
+          y1="205"
+          x2="450"
+          y2="205"
+          stroke="#111827"
+          stroke-width="3"
+        />
+
+        <text
+          x="278"
+          y="190"
+          font-size="25"
+          font-family="Georgia, serif"
+        >
+          O
+        </text>
+
+        <text
+          x="345"
+          y="190"
+          font-size="25"
+          font-family="Georgia, serif"
+        >
+          R = 5 см
+        </text>
+      </svg>
+    `,
+
+    options: [
+      "12π см",
+      "15π см",
+      "9π см",
+      "10π см",
+      "5π см"
+    ],
+
+    correct: 3,
+
+    explanation:
+      "Шеңбердің периметрі немесе ұзындығы радиус арқылы L = 2πr формуласымен есептеледі.",
+
+    steps: [
+      "Шеңбердің радиусы r = 5 см.",
+      "Шеңбер ұзындығының формуласы: L = 2πr.",
+      "Радиусты формулаға қоямыз: L = 2π · 5.",
+      "L = 10π см."
+    ],
+
+    formula:
+      "L = 2πr = 2π · 5 = 10π см",
+
+    conclusion:
+      "Дұрыс жауап: D) 10π см."
+  },
+  {
+    number: 6,
+
+    question:
+      "Баласы қазір 5 жаста, 5 жылдан соң әкесінің жасы баласынан 3 есе үлкен. Әкесі қазір неше жаста?",
+
+    visual: "",
+
+    options: [
+      "35",
+      "25",
+      "15",
+      "40",
+      "30"
+    ],
+
+    correct: 1,
+
+    explanation:
+      "Алдымен баланың 5 жылдан кейінгі жасын табамыз. Сол кезде әкесінің жасы баласының жасынан 3 есе үлкен болады.",
+
+    steps: [
+      "Баласы қазір 5 жаста.",
+      "5 жылдан кейін баласы: 5 + 5 = 10 жаста болады.",
+      "Сол кезде әкесінің жасы: 10 · 3 = 30 жас.",
+      "Әкесінің қазіргі жасы: 30 − 5 = 25 жас."
+    ],
+
+    formula:
+      "(5 + 5) · 3 − 5 = 25",
+
+    conclusion:
+      "Дұрыс жауап: B) 25."
+  },
+
+  {
+    number: 7,
+
+    question:
+      "Тік төртбұрыштың ені 4 1/5 см, бұл оның ұзындығының 1/2-індей. Тік төртбұрыштың периметрі",
+
+    visual: `
+      <div class="math-box">
+        Ені = 4
+        <span class="fraction">
+          <span>1</span>
+          <span>5</span>
+        </span>
+        см,
+        ені ұзындығының
+        <span class="fraction">
+          <span>1</span>
+          <span>2</span>
+        </span>
+        бөлігі
+      </div>
+    `,
+
+    options: [
+      "129/7",
+      "129/5",
+      "126/5",
+      "126/7",
+      "124/5"
+    ],
+
+    correct: 2,
+
+    explanation:
+      "Ені ұзындығының жартысына тең болғандықтан, ұзындығы енінен 2 есе үлкен. Периметр екі еселенген ұзындық пен еннің қосындысына тең.",
+
+    steps: [
+      "Ені: 4 1/5 = 21/5 см.",
+      "Ені ұзындығының 1/2 бөлігі болғандықтан, ұзындығы: 21/5 · 2 = 42/5 см.",
+      "Периметр формуласы: P = 2(a + b).",
+      "P = 2 · (21/5 + 42/5).",
+      "P = 2 · 63/5.",
+      "P = 126/5 см."
+    ],
+
+    formula:
+      "P = 2 · (21/5 + 42/5) = 126/5 см",
+
+    conclusion:
+      "Дұрыс жауап: C) 126/5."
+  },
+
+  {
+    number: 8,
+
+    question:
+      "Төмендегі кестені қанағаттандыратын теңдеу",
+
+    visual: `
+      <div class="table-wrapper">
+        <table class="data-table">
+          <tbody>
+            <tr>
+              <th>Уақыт, t (сағ)</th>
+              <td>1</td>
+              <td>2</td>
+              <td>3</td>
+              <td>4</td>
+            </tr>
+
+            <tr>
+              <th>Жүрілген жол, s (км)</th>
+              <td>10</td>
+              <td>30</td>
+              <td>50</td>
+              <td>70</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    `,
+
+    options: [
+      "s = 20t − 10",
+      "s = 1/2t + 15",
+      "s = t",
+      "s = t²",
+      "s = 10t + 30"
+    ],
+
+    correct: 0,
+
+    explanation:
+      "Кестеде уақыт бір сағатқа артқан сайын жүрілген жол 20 км-ге көбейіп отыр. Сондықтан теңдеудің t алдындағы коэффициенті 20-ға тең.",
+
+    steps: [
+      "t = 1 болғанда s = 10.",
+      "t = 2 болғанда s = 30.",
+      "Жолдың әр сағаттағы өсімі: 30 − 10 = 20 км.",
+      "Сызықтық теңдеу s = 20t + b түрінде болады.",
+      "t = 1 және s = 10 мәндерін қоямыз: 10 = 20 · 1 + b.",
+      "b = −10.",
+      "Теңдеу: s = 20t − 10.",
+      "Тексеру: t = 4 болса, s = 20 · 4 − 10 = 70."
+    ],
+
+    formula:
+      "s = 20t − 10",
+
+    conclusion:
+      "Дұрыс жауап: A) s = 20t − 10."
+  },
+
+  {
+    number: 9,
+
+    question:
+      "Айгүлде ақ, жасыл, қызыл костюмдер және сұр, қара, көк шалбарлар бар. Айгүлдің костюмдері мен шалбарларын ауыстырып кию нұсқалар саны",
+
+    visual: "",
+
+    options: [
+      "18",
+      "9",
+      "24",
+      "27",
+      "12"
+    ],
+
+    correct: 1,
+
+    explanation:
+      "Әр костюмді үш шалбардың кез келгенімен үйлестіруге болады. Сондықтан көбейту ережесін қолданамыз.",
+
+    steps: [
+      "Костюмдер саны — 3: ақ, жасыл, қызыл.",
+      "Шалбарлар саны — 3: сұр, қара, көк.",
+      "Әр костюмге 3 түрлі шалбар сәйкес келеді.",
+      "Барлық нұсқа саны: 3 · 3 = 9."
+    ],
+
+    formula:
+      "3 · 3 = 9",
+
+    conclusion:
+      "Дұрыс жауап: B) 9."
+  },
+
+  {
+    number: 10,
+
+    question:
+      "Сызбада автомобиль жүргізушісінің жүрген жолы көрсетілген. Жүргізушінің ең көп жол жүрген сағаты",
+
+    visual: `
+      <div class="chart-box">
+        <svg
+          class="question-image"
+          viewBox="0 0 760 470"
+          role="img"
+          aria-label="Уақыт пен жүрген жол графигі"
+        >
+          <rect
+            x="0"
+            y="0"
+            width="760"
+            height="470"
+            fill="#ffffff"
+          />
+
+          <g
+            stroke="#d0d5dd"
+            stroke-width="1"
+            stroke-dasharray="4 4"
+          >
+            <line x1="80" y1="390" x2="710" y2="390" />
+            <line x1="80" y1="350" x2="710" y2="350" />
+            <line x1="80" y1="310" x2="710" y2="310" />
+            <line x1="80" y1="270" x2="710" y2="270" />
+            <line x1="80" y1="230" x2="710" y2="230" />
+            <line x1="80" y1="190" x2="710" y2="190" />
+            <line x1="80" y1="150" x2="710" y2="150" />
+            <line x1="80" y1="110" x2="710" y2="110" />
+            <line x1="80" y1="70" x2="710" y2="70" />
+          </g>
+
+          <line
+            x1="80"
+            y1="410"
+            x2="710"
+            y2="410"
+            stroke="#111827"
+            stroke-width="2"
+          />
+
+          <line
+            x1="80"
+            y1="410"
+            x2="80"
+            y2="50"
+            stroke="#111827"
+            stroke-width="2"
+          />
+
+          <polyline
+            points="
+              120,370
+              210,330
+              300,330
+              390,250
+              480,250
+              570,130
+              660,90
+            "
+            fill="none"
+            stroke="#2563eb"
+            stroke-width="5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+
+          <g
+            fill="#111827"
+            font-size="20"
+            font-family="Arial, sans-serif"
+            text-anchor="middle"
+          >
+            <text x="120" y="440">1</text>
+            <text x="210" y="440">2</text>
+            <text x="300" y="440">3</text>
+            <text x="390" y="440">4</text>
+            <text x="480" y="440">5</text>
+            <text x="570" y="440">6</text>
+            <text x="660" y="440">7</text>
+          </g>
+
+          <g
+            fill="#111827"
+            font-size="18"
+            font-family="Arial, sans-serif"
+            text-anchor="end"
+          >
+            <text x="68" y="396">0</text>
+            <text x="68" y="356">10</text>
+            <text x="68" y="316">20</text>
+            <text x="68" y="276">30</text>
+            <text x="68" y="236">40</text>
+            <text x="68" y="196">50</text>
+            <text x="68" y="156">60</text>
+            <text x="68" y="116">70</text>
+            <text x="68" y="76">80</text>
+          </g>
+
+          <text
+            x="385"
+            y="35"
+            font-size="24"
+            font-family="Arial, sans-serif"
+            text-anchor="middle"
+          >
+            s (км)
+          </text>
+        </svg>
+      </div>
+    `,
+
+    options: [
+      "1 пен 2 сағат аралығы",
+      "3 пен 4 сағат аралығы",
+      "5 пен 6 сағат аралығы",
+      "6 пен 7 сағат аралығы",
+      "2 пен 3 сағат аралығы"
+    ],
+
+    correct: 2,
+
+    explanation:
+      "Графиктің әр бөлігіндегі жүрген жолды табу үшін сол аралықтың соңындағы және басындағы жол мәндерінің айырмасын есептейміз.",
+
+    steps: [
+      "1–2 сағат аралығында: 20 − 10 = 10 км.",
+      "2–3 сағат аралығында: 20 − 20 = 0 км.",
+      "3–4 сағат аралығында: 40 − 20 = 20 км.",
+      "4–5 сағат аралығында: 40 − 40 = 0 км.",
+      "5–6 сағат аралығында: 70 − 40 = 30 км.",
+      "6–7 сағат аралығында: 80 − 70 = 10 км.",
+      "Ең үлкен жол — 30 км."
+    ],
+
+    formula:
+      "70 − 40 = 30 км",
+
+    conclusion:
+      "Дұрыс жауап: C) 5 пен 6 сағат аралығы."
+  },
+  {
+    number: 11,
+
+    question:
+      "Төмендегі кестені қанағаттандыратын теңдеу",
+
+    visual: `
+      <div class="table-wrapper">
+        <table class="data-table">
+          <tbody>
+            <tr>
+              <th>Уақыт, t (сағ)</th>
+              <td>1</td>
+              <td>2</td>
+              <td>3</td>
+              <td>4</td>
+            </tr>
+
+            <tr>
+              <th>Жүрілген жол, s (км)</th>
+              <td>19</td>
+              <td>22</td>
+              <td>25</td>
+              <td>28</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    `,
+
+    options: [
+      "s = 10t + 30",
+      "s = 1/2t + 15",
+      "s = 20t − 10",
+      "s = t²",
+      "s = 3(t + 2) + 10"
+    ],
+
+    correct: 4,
+
+    explanation:
+      "Кестеде уақыт бір сағатқа артқан сайын жүрген жол 3 километрге артады. Сондықтан тәуелділік сызықтық және t айнымалысының коэффициенті 3-ке тең.",
+
+    steps: [
+      "Кестедегі жол мәндерін салыстырамыз: 22 − 19 = 3.",
+      "Келесі айырма: 25 − 22 = 3.",
+      "Соңғы айырма: 28 − 25 = 3.",
+      "Демек, теңдеу s = 3t + b түрінде болады.",
+      "t = 1 және s = 19 мәндерін қоямыз: 19 = 3 · 1 + b.",
+      "b = 16.",
+      "Сондықтан s = 3t + 16.",
+      "E нұсқасын ықшамдаймыз: 3(t + 2) + 10 = 3t + 6 + 10 = 3t + 16."
+    ],
+
+    formula:
+      "s = 3(t + 2) + 10 = 3t + 16",
+
+    conclusion:
+      "Дұрыс жауап: E) s = 3(t + 2) + 10."
+  },
+
+  {
+    number: 12,
+
+    question:
+      "Төменде қыстың 3 айында дүкенде сатылған тауарлардың саны. Ақпан айындағы сатылған қолғап саны желтоқсан айындағы сатылған аяқ киім санынан қаншаға аз",
+
+    visual: `
+      <svg
+        class="question-image"
+        viewBox="0 0 780 500"
+        role="img"
+        aria-label="Қыс айларында сатылған аяқ киім, бас киім және қолғап саны"
+      >
+        <rect
+          x="0"
+          y="0"
+          width="780"
+          height="500"
+          fill="#ffffff"
+        />
+
+        <g
+          stroke="#d0d5dd"
+          stroke-width="1"
+        >
+          <line x1="90" y1="420" x2="650" y2="420" />
+          <line x1="90" y1="375" x2="650" y2="375" />
+          <line x1="90" y1="330" x2="650" y2="330" />
+          <line x1="90" y1="285" x2="650" y2="285" />
+          <line x1="90" y1="240" x2="650" y2="240" />
+          <line x1="90" y1="195" x2="650" y2="195" />
+          <line x1="90" y1="150" x2="650" y2="150" />
+          <line x1="90" y1="105" x2="650" y2="105" />
+          <line x1="90" y1="60" x2="650" y2="60" />
+        </g>
+
+        <g
+          fill="#475467"
+          font-size="17"
+          font-family="Arial, sans-serif"
+          text-anchor="end"
+        >
+          <text x="78" y="426">0</text>
+          <text x="78" y="381">20</text>
+          <text x="78" y="336">40</text>
+          <text x="78" y="291">60</text>
+          <text x="78" y="246">80</text>
+          <text x="78" y="201">100</text>
+          <text x="78" y="156">120</text>
+          <text x="78" y="111">140</text>
+          <text x="78" y="66">160</text>
+        </g>
+
+        <polyline
+          points="180,60 370,195 560,240"
+          fill="none"
+          stroke="#3b82f6"
+          stroke-width="4"
+        />
+
+        <polyline
+          points="180,150 370,60 560,195"
+          fill="none"
+          stroke="#f97316"
+          stroke-width="4"
+        />
+
+        <polyline
+          points="180,218 370,308 560,285"
+          fill="none"
+          stroke="#9ca3af"
+          stroke-width="4"
+        />
+
+        <g
+          fill="#111827"
+          font-size="19"
+          font-family="Arial, sans-serif"
+          text-anchor="middle"
+        >
+          <text x="180" y="458">Желтоқсан</text>
+          <text x="370" y="458">Қаңтар</text>
+          <text x="560" y="458">Ақпан</text>
+        </g>
+
+        <g
+          font-size="17"
+          font-family="Arial, sans-serif"
+        >
+          <line
+            x1="665"
+            y1="145"
+            x2="705"
+            y2="145"
+            stroke="#3b82f6"
+            stroke-width="4"
+          />
+          <text x="712" y="151">аяқ киім</text>
+
+          <line
+            x1="665"
+            y1="185"
+            x2="705"
+            y2="185"
+            stroke="#f97316"
+            stroke-width="4"
+          />
+          <text x="712" y="191">бас киім</text>
+
+          <line
+            x1="665"
+            y1="225"
+            x2="705"
+            y2="225"
+            stroke="#9ca3af"
+            stroke-width="4"
+          />
+          <text x="712" y="231">қолғап</text>
+        </g>
+      </svg>
+    `,
+
+    options: [
+      "65",
+      "80",
+      "95",
+      "100",
+      "99"
+    ],
+
+    correct: 3,
+
+    explanation:
+      "Диаграммадан желтоқсан айындағы аяқ киімнің және ақпан айындағы қолғаптың сатылу санын анықтап, олардың айырмасын есептейміз.",
+
+    steps: [
+      "Желтоқсан айында 160 аяқ киім сатылған.",
+      "Ақпан айында 60 қолғап сатылған.",
+      "Қаншаға аз екенін анықтау үшін үлкен мәннен кіші мәнді азайтамыз.",
+      "160 − 60 = 100."
+    ],
+
+    formula:
+      "160 − 60 = 100",
+
+    conclusion:
+      "Дұрыс жауап: D) 100."
+  },
+
+  {
+    number: 13,
+
+    question:
+      "Берілген диаграммада университетке жыл сайынғы түскен талапкерлер саны көрсетілген. Егер талапкерлердің түсуінің артуы сол жылғы университеттің рейтингінің өсуіне тәуелді болса, 2020 жылы 2019 жылғы рейтингке қарағанда ілгерілеген университеттер",
+
+    visual: `
+      <svg
+        class="question-image"
+        viewBox="0 0 820 540"
+        role="img"
+        aria-label="2018, 2019 және 2020 жылдары университеттерге тапсырған талапкерлер саны"
+      >
+        <rect
+          x="0"
+          y="0"
+          width="820"
+          height="540"
+          fill="#ffffff"
+        />
+
+        <text
+          x="410"
+          y="35"
+          text-anchor="middle"
+          font-size="24"
+          font-family="Arial, sans-serif"
+          fill="#475467"
+        >
+          Университетке тапсырған талапкерлер саны
+        </text>
+
+        <g
+          stroke="#d0d5dd"
+          stroke-width="1"
+        >
+          <line x1="85" y1="440" x2="760" y2="440" />
+          <line x1="85" y1="390" x2="760" y2="390" />
+          <line x1="85" y1="340" x2="760" y2="340" />
+          <line x1="85" y1="290" x2="760" y2="290" />
+          <line x1="85" y1="240" x2="760" y2="240" />
+          <line x1="85" y1="190" x2="760" y2="190" />
+          <line x1="85" y1="140" x2="760" y2="140" />
+          <line x1="85" y1="90" x2="760" y2="90" />
+          <line x1="85" y1="40" x2="760" y2="40" />
+        </g>
+
+        <g
+          fill="#475467"
+          font-size="15"
+          font-family="Arial, sans-serif"
+          text-anchor="end"
+        >
+          <text x="75" y="445">0</text>
+          <text x="75" y="395">500</text>
+          <text x="75" y="345">1000</text>
+          <text x="75" y="295">1500</text>
+          <text x="75" y="245">2000</text>
+          <text x="75" y="195">2500</text>
+          <text x="75" y="145">3000</text>
+          <text x="75" y="95">3500</text>
+          <text x="75" y="45">4000</text>
+        </g>
+
+        <!-- 1-университет -->
+        <rect x="125" y="290" width="24" height="150" fill="#3b82f6" />
+        <rect x="151" y="240" width="24" height="200" fill="#f97316" />
+        <rect x="177" y="90" width="24" height="350" fill="#9ca3af" />
+
+        <!-- 2-университет -->
+        <rect x="250" y="40" width="24" height="400" fill="#3b82f6" />
+        <rect x="276" y="90" width="24" height="350" fill="#f97316" />
+        <rect x="302" y="40" width="24" height="400" fill="#9ca3af" />
+
+        <!-- 3-университет -->
+        <rect x="375" y="190" width="24" height="250" fill="#3b82f6" />
+        <rect x="401" y="90" width="24" height="350" fill="#f97316" />
+        <rect x="427" y="140" width="24" height="300" fill="#9ca3af" />
+
+        <!-- 4-университет -->
+        <rect x="500" y="40" width="24" height="400" fill="#3b82f6" />
+        <rect x="526" y="90" width="24" height="350" fill="#f97316" />
+        <rect x="552" y="240" width="24" height="200" fill="#9ca3af" />
+
+        <!-- 5-университет -->
+        <rect x="625" y="140" width="24" height="300" fill="#3b82f6" />
+        <rect x="651" y="90" width="24" height="350" fill="#f97316" />
+        <rect x="677" y="140" width="24" height="300" fill="#9ca3af" />
+
+        <g
+          fill="#111827"
+          font-size="14"
+          font-family="Arial, sans-serif"
+          text-anchor="middle"
+        >
+          <text x="163" y="468">1-университет</text>
+          <text x="288" y="468">2-университет</text>
+          <text x="413" y="468">3-университет</text>
+          <text x="538" y="468">4-университет</text>
+          <text x="663" y="468">5-университет</text>
+        </g>
+
+        <g
+          font-size="14"
+          font-family="Arial, sans-serif"
+        >
+          <rect x="260" y="495" width="15" height="15" fill="#3b82f6" />
+          <text x="282" y="508">2018 жыл</text>
+
+          <rect x="380" y="495" width="15" height="15" fill="#f97316" />
+          <text x="402" y="508">2019 жыл</text>
+
+          <rect x="500" y="495" width="15" height="15" fill="#9ca3af" />
+          <text x="522" y="508">2020 жыл</text>
+        </g>
+      </svg>
+    `,
+
+    options: [
+      "1, 2 және 3 университеттер",
+      "1 және 2 университеттер",
+      "2, 4 және 5 университеттер",
+      "4 және 5 университеттер",
+      "4-университет"
+    ],
+
+    correct: 1,
+
+    explanation:
+      "2020 жылғы көрсеткіш 2019 жылғы көрсеткіштен жоғары болған университеттердің рейтингі өскен деп есептеледі.",
+
+    steps: [
+      "1-университет: 2019 жылы 2000, 2020 жылы 3500. Көрсеткіш өскен.",
+      "2-университет: 2019 жылы 3500, 2020 жылы 4000. Көрсеткіш өскен.",
+      "3-университет: 2019 жылы 3500, 2020 жылы 3000. Көрсеткіш төмендеген.",
+      "4-университет: 2019 жылы 3500, 2020 жылы 2000. Көрсеткіш төмендеген.",
+      "5-университет: 2019 жылы 3500, 2020 жылы 3000. Көрсеткіш төмендеген.",
+      "Демек, 1 және 2 университеттер ілгерілеген."
+    ],
+
+    formula:
+      "2020 > 2019: 1-университет және 2-университет",
+
+    conclusion:
+      "Дұрыс жауап: B) 1 және 2 университеттер."
+  },
+
+  {
+    number: 14,
+
+    question:
+      "Ең аз және ең көп оқушы бітірген жылдардағы оқушылар санының қатынасы",
+
+    visual: `
+      <div class="task-text">
+        Төменде 2001–2006 жылдар арасы мектепті
+        бітірген оқушылар саны берілген.
+      </div>
+
+      <div class="table-wrapper">
+        <table class="data-table">
+          <tbody>
+            <tr>
+              <th>Жыл</th>
+              <td>2001</td>
+              <td>2002</td>
+              <td>2003</td>
+              <td>2004</td>
+              <td>2005</td>
+              <td>2006</td>
+            </tr>
+
+            <tr>
+              <th>Оқушы</th>
+              <td>65</td>
+              <td>83</td>
+              <td>74</td>
+              <td>120</td>
+              <td>52</td>
+              <td>81</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    `,
+
+    options: [
+      "4:5",
+      "3:8",
+      "13:30",
+      "17:26",
+      "11:19"
+    ],
+
+    correct: 2,
+
+    explanation:
+      "Кестеден ең аз және ең көп оқушы санын анықтап, олардың қатынасын қысқартамыз.",
+
+    steps: [
+      "Ең аз оқушы саны — 52. Бұл 2005 жылғы көрсеткіш.",
+      "Ең көп оқушы саны — 120. Бұл 2004 жылғы көрсеткіш.",
+      "Қатынас: 52:120.",
+      "Екі санды да 4-ке бөлеміз.",
+      "52 ÷ 4 = 13.",
+      "120 ÷ 4 = 30.",
+      "Қысқартылған қатынас: 13:30."
+    ],
+
+    formula:
+      "52:120 = 13:30",
+
+    conclusion:
+      "Дұрыс жауап: C) 13:30."
+  },
+
+  {
+    number: 15,
+
+    question:
+      "2011 жылмен салыстырғандағы 2021 жылы ең көп өсім болған қаланы көрсетіңіз.",
+
+    visual: `
+      <div class="task-text">
+        Әртүрлі қалалардың тұрғындар саны
+      </div>
+
+      <div class="table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Қалалар</th>
+              <th>Тұрғындар саны, 2011 жыл</th>
+              <th>Тұрғындар саны, 2021 жыл</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <th>A</th>
+              <td>180 500</td>
+              <td>204 300</td>
+            </tr>
+
+            <tr>
+              <th>B</th>
+              <td>140 300</td>
+              <td>157 800</td>
+            </tr>
+
+            <tr>
+              <th>C</th>
+              <td>97 800</td>
+              <td>106 200</td>
+            </tr>
+
+            <tr>
+              <th>D</th>
+              <td>240 300</td>
+              <td>272 400</td>
+            </tr>
+
+            <tr>
+              <th>E</th>
+              <td>150 700</td>
+              <td>175 200</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    `,
+
+    options: [
+      "D",
+      "A",
+      "B",
+      "C",
+      "E"
+    ],
+
+    correct: 0,
+
+    explanation:
+      "Әр қала бойынша 2021 жылғы тұрғындар санынан 2011 жылғы тұрғындар санын азайтып, өсім мөлшерлерін салыстырамыз.",
+
+    steps: [
+      "A қаласы: 204 300 − 180 500 = 23 800.",
+      "B қаласы: 157 800 − 140 300 = 17 500.",
+      "C қаласы: 106 200 − 97 800 = 8 400.",
+      "D қаласы: 272 400 − 240 300 = 32 100.",
+      "E қаласы: 175 200 − 150 700 = 24 500.",
+      "Ең үлкен өсім — 32 100.",
+      "Бұл D қаласына тиесілі."
+    ],
+
+    formula:
+      "272 400 − 240 300 = 32 100",
+
+    conclusion:
+      "Дұрыс жауап: A) D."
+  }
+
+];
+
+const analyticalQuestions = [
+
+  // Аналитикалық ойлау сұрақтары
+  // осы жерден жалғасады.
